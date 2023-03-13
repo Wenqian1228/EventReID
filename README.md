@@ -1,18 +1,17 @@
-# STRA
+# Event-guided Person Re-Identification via Sparse-Dense Complementary Learning
 
-<img src= "https://github.com/Chengzhi-Cao/STRA/blob/main/network.jpg" width="120%">
+<img src= "pic/network.jpg" width="120%">
 
-This repository provides the official PyTorch implementation of the following paper:
+This repository provides the official PyTorch implementation of the following paper (**CVPR 2023**):
 
-> Event-driven Video Deblurring via Spatio-Temporal Relation-Aware Network
->
-> Chengzhi Cao, Xueyang Fu*, Yurui Zhu, Gege Shi, Zheng-jun Zha
->
-> In IJCAI 2022.
->
-> Paper Link:
->
-> Video deblurring with event information has attracted considerable attention. To help deblur each frame, existing methods usually compress a specific event sequence into a feature tensor with the same size as the corresponding video. However, this strategy neither considers the pixel-level spatial brightness changes nor the temporal correlation between events at each time step, resulting in insufficient use of spatio-temporal information. To address this issue, we propose a new Spatio-Temporal Relation-Attention network (STRA), for the specific event-based video deblurring. Concretely, to utilize spatial consistency between the frame and event, we model the brightness changes as an extra prior to aware blurring contexts in each frame; to record temporal relationship among different events, we develop a temporal memory block to restore long-range dependencies of event sequences continuously. In this way, the complementary information contained in the events and frames, as well as the correlation of neighboring events, can be fully utilized to recover spatial texture from events constantly. Experiments show that our STRA significantly outperforms several competing methods, e.g., on the HQF dataset, our network achieves up to 1.3 dB in terms of PSNR over the most advanced method.
+ Event-guided Person Re-Identification via Sparse-Dense Complementary Learning
+
+ Chengzhi Cao, Xueyang Fu*, Hongjian Liu, Yukun Huang, Kunyu Wang, Jiebo Luo, Zheng-Jun Zha
+
+
+ Paper Link:
+
+ Video-based person re-identification (Re-ID) is a prominent computer vision topic due to its wide range of video surveillance applications. Most existing methods utilize spatial and temporal correlations in frame sequences to obtain discriminative person features. However, inevitable degradations, e.g., motion blur contained in frames often cause ambiguity texture noise and temporal disturbance, leading to the loss of identity-discriminating cues. Recently, a new bio-inspired sensor called event camera, which can asynchronously record intensity changes, brings new vitality to the Re-ID task. With the microsecond resolution and low latency, event cameras can accurately capture the movements of pedestrians even in the aforementioned degraded environments. Inspired by the properties of event cameras, in this work, we propose a Sparse-Dense Complementary Learning Framework, which effectively extracts identity features by fully exploiting the complementary information of dense frames and sparse events. Specifically, for frames, we build a CNN-based module to aggregate the dense features of pedestrian appearance step-by-step, while for event streams, we design a bio-inspired spiking neural backbone, which encodes event signals into sparse feature maps in a spiking form, to present the dynamic motion cues of pedestrians. Finally, a cross feature alignment module is constructed to complementarily fuse motion information from events and appearance cues from frames to enhance identity representation learning. Experiments on several benchmarks show that by employing events and SNN into Re-ID, our method significantly outperforms competitive methods.
 
 ---
 
@@ -38,59 +37,85 @@ The contents of this repository are as follows:
 
 ## Dataset
 
-- Download deblur dataset from the [GoPro dataset](https://seungjunnah.github.io/Datasets/gopro.html) .
+### MARS
+Experiments on MARS, as it is the largest dataset available to date for video-based person reID. Please follow [deep-person-reid](https://github.com/KaiyangZhou/deep-person-reid) to prepare the data. The instructions are copied here: 
 
-- Unzip files ```dataset``` folder.
+1. Create a directory named `mars/`.
+2. Download dataset to `mars/` from http://www.liangzheng.com.cn/Project/project_mars.html.
+3. Extract `bbox_train.zip` and `bbox_test.zip`.
+4. Download split information from https://github.com/liangzheng06/MARS-evaluation/tree/master/info and put `info/` in `data/mars` (we want to follow the standard split in [8]). The data structure would look like:
+5. Download `mars_attributes.csv` from http://irip.buaa.edu.cn/mars_duke_attributes/index.html, and put the file in `data/mars`. The data structure would look like:
+```
+mars/
+    bbox_test/
+    bbox_train/
+    info/
+    mars_attributes.csv
+```
+6. Change the global variable `_C.DATASETS.ROOT_DIR` to `/path2mars/mars` and `_C.DATASETS.NAME` to `mars` in config or configs.
 
-- Preprocess dataset by running the command below:
+### iLIDS-VID
 
-  ``` python data/preprocessing.py```
+* Create a directory named ilids-vid/ under data/.
 
-After preparing data set, the data folder should be like the format below:
+* Download the dataset from http://www.eecs.qmul.ac.uk/~xiatian/downloads_qmul_iLIDS-VID_ReID_dataset.html to "ilids-vid".
+
+* Organize the data structure to match
 
 ```
-GOPRO
-├─ train
-│ ├─ blur    % 2103 image pairs
-│ │ ├─ xxxx.png
-│ │ ├─ ......
-│ │
-│ ├─ sharp
-│ │ ├─ xxxx.png
-│ │ ├─ ......
-│
-├─ test    % 1111 image pairs
-│ ├─ ...... (same as train)
-
+ilids-vid/
+    i-LIDS-VID/
+    train-test people splits
 ```
-- Preprocess events by running the command below:
-
-  ``` python data/dataset_event.py```
 
 ---
 
 ## Train
 
-To train STRA , run the command below:
+To train SDCL , run the command below:
 
-``` python main.py --model_name "STRA" --mode "train_event_Temporal" --data_dir "dataset/GOPRO" ```
-
-Model weights will be saved in ``` results/model_name/weights``` folder.
+``` 
+python Train.py   --arch 'PSTA'\
+                  --config_file "./configs/softmax_triplet.yml"\
+                  --dataset 'mars'\
+                  --test_sampler 'Begin_interval'\
+                  --triplet_distance 'cosine'\
+                  --test_distance 'cosine'\
+                  --seq_len 8 
+```
 
 ---
 
 ## Test
 
-To test STRA , run the command below:
+To test SDCL, run the command below:
 
-``` python main.py --model_name "STRA" --mode "test" --data_dir "dataset/GOPRO" --test_model "xxx.pkl" ```
-
-Output images will be saved in ``` results/model_name/result_image``` folder.
+``` 
+python Test.py  --arch 'PSTA'\
+                --dataset 'mars'\
+                --test_sampler 'Begin_interval'\
+                --triplet_distance 'cosine'\
+                --test_distance 'cosine'
+ ```
 
 ---
+
+## Performance
+
+
+### Comparision with SOTA
+![Comparision with SOTA](pic/performance.jpg)
+
+
+### Better trade-off between speed and performance:
+![Computation-performance Balance](pic/Flops.jpg)
+
+More experiments result can be found in paper.
+
+## Visualization
+![Visual examples of learned feature maps](pic/visual.jpg)
+
 
 ## Contact
 Should you have any question, please contact chengzhicao@mail.ustc.edu.cn.
 
-## Notes and references
-The  code is based on the paper 'Rethinking Coarse-to-Fine Approach in Single Image Deblurring'(https://arxiv.org/abs/2108.05054)
