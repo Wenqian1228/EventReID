@@ -75,9 +75,9 @@ ilids-vid/
 To train SDCL , run the command below:
 
 ``` 
-python Train.py   --arch 'PSTA'\
+python Train_event_vid.py   --arch 'STMN_Net_deform2'\
                   --config_file "./configs/softmax_triplet.yml"\
-                  --dataset 'mars'\
+                  --dataset 'prid_event_vid'\
                   --test_sampler 'Begin_interval'\
                   --triplet_distance 'cosine'\
                   --test_distance 'cosine'\
@@ -91,8 +91,8 @@ python Train.py   --arch 'PSTA'\
 To test SDCL, run the command below:
 
 ``` 
-python Test.py  --arch 'PSTA'\
-                --dataset 'mars'\
+python Test.py  --arch 'STMN_Net_deform2'\
+                --dataset 'prid_event_vid'\
                 --test_sampler 'Begin_interval'\
                 --triplet_distance 'cosine'\
                 --test_distance 'cosine'
