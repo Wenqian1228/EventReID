@@ -51,7 +51,6 @@ def read_mat(img_path):
             event_y=event_sequence['section_event_y']
             event_x=event_sequence['section_event_x']
     
-            # event_frame = np.zeros([3,128,64],int) 
             event_frame = np.zeros([3,256,128],int) 
 
             total_time = end_time - start_time
@@ -283,11 +282,7 @@ class Video_Event_Dataset_mars(Dataset):
                 events_list = events_list[sp:ep]
             events_array = torch.stack(events_list)
 
-            
-            # print('events_array=',events_array.shape)
-
             imgs_array = torch.cat((imgs_array,events_array),0)
-            # print('imgs_array=',imgs_array.shape)
 
             if imgs_array == None:
                 imgs_array = torch.zeros((16,3,128,64))
@@ -343,8 +338,8 @@ class Video_Event_Dataset_mars(Dataset):
                 clip_event = []
                 for s in range(8):
                     a = np.zeros((128, 256, 3))
-                    a = np.clip(a, 0, 1) # 将numpy数组约束在[0, 1]范围内
-                    a = (a * 255).astype(np.uint8) # 转换成uint8类型
+                    a = np.clip(a, 0, 1) 
+                    a = (a * 255).astype(np.uint8) 
                     im = Image.fromarray(a)
                     clip_event.append(im)
 
@@ -470,8 +465,8 @@ class Video_Event_Dataset_mars(Dataset):
                 clip_event = []
                 for s in range(8):
                     a = np.zeros((128, 256, 3))
-                    a = np.clip(a, 0, 1) # 将numpy数组约束在[0, 1]范围内
-                    a = (a * 255).astype(np.uint8) # 转换成uint8类型
+                    a = np.clip(a, 0, 1) 
+                    a = (a * 255).astype(np.uint8)
                     im = Image.fromarray(a)
                     clip_event.append(im)
 
@@ -484,11 +479,6 @@ class Video_Event_Dataset_mars(Dataset):
                 clip_event = torch.stack(clip_event, 0)
 
             clip = torch.cat((clip,clip_event),0)
-            # print('clip=',clip.shape)       # [16,3,128,64]
-            
-            # if clip.shape != [16,3,128,64]:
-            #     clip_num = clip.shape[0]
-            #     clip = torch.cat((clip,clip[range(0,16-clip_num),:,:,:]),0)
 
 
             if clip == None:

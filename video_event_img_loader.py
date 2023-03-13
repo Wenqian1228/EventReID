@@ -15,9 +15,6 @@ import torchvision.utils as vutil
 
 import scipy.io as scio
 
-# print(1)
-# sys.setrecursionlimit(1000000000)
-
 def read_image(img_path):
     """Keep reading image until succeed.
     This can avoid IOError incurred by heavy IO process."""
@@ -66,7 +63,7 @@ def read_mat(img_path):
                 else:
                     time_init_num = time_init_num + 1
                 
-            event_array=np.array(event_frame).astype(np.float32)    # [3,128,64]
+            event_array=np.array(event_frame).astype(np.float32)   
             event_array = event_array.transpose((2,1,0))
             img_PIL = Image.fromarray(np.uint8(event_array))
 
@@ -123,7 +120,7 @@ def event_loader(img_path):
         else:
             time_init_num = time_init_num + 1
         
-    event_array=np.array(event_frame).astype(np.float32)    # [3,128,64]
+    event_array=np.array(event_frame).astype(np.float32) 
     event_array = event_array.transpose((2,1,0))
     img_PIL = Image.fromarray(np.uint8(event_array))
 
@@ -179,7 +176,6 @@ def produce_out(imgs_path,seq_len, stride):
     indices = frame_indices[begin_index:end_index]
     re_indices= []
     for i in range(0, seq_len * stride, stride):
-        # add_arg = random.randint(0, stride-1)
         add_arg = 1
         re_indices.append(indices[i + add_arg])
     re_indices = np.array(re_indices)
@@ -212,7 +208,6 @@ class Video_Event_img_Dataset(Dataset):
         self.dataset_name = dataset_name
         self.loader = get_loader()
 
-        # self.loader_event = get_default_event_list_loader()
 
     def __len__(self):
         return len(self.dataset)
@@ -281,9 +276,6 @@ class Video_Event_img_Dataset(Dataset):
                 ep = sp + self.max_seq_len
                 events_list = events_list[sp:ep]
             events_array = torch.stack(events_list)
-
-            # print('imgs_array=',imgs_array.shape)
-            # print('events_array=',events_array.shape)
 
             imgs_array = torch.cat((imgs_array,events_array),0)
             return imgs_array, pid, camid, img_paths[0]
@@ -427,7 +419,6 @@ class Video_Event_img_Dataset(Dataset):
                 index.sort()
                 out = [event_paths[index[i]] for i in range(self.seq_len)]
 
-            # clip_event = self.loader_event(out)
             clip_event = self.loader(out)
 
             clip_event = self.transform(clip_event)

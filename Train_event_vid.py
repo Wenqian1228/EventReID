@@ -7,9 +7,7 @@ import argparse
 import os.path as osp
 import numpy as np
 import random
-# export http_proxy=http://192.168.9.99:3128
-# export https_proxy=http://192.168.9.99:3128
-
+s
 from torch.utils.data import DataLoader
 
 import data_manager
@@ -39,9 +37,6 @@ parser = argparse.ArgumentParser(description="ReID Baseline Training")
 parser.add_argument("--config_file", default="./configs/softmax_triplet_prid128.yml", help="path to config file", type=str)
 parser.add_argument("opts", help="Modify config options using the command-line", default=None,nargs=argparse.REMAINDER)
 
-
-# parser.add_argument('--arch', type=str, default='PSTA_img_event_deform1', choices=['ResNet50', 'PSTA','PSTA_img_event_cat','PSTA_img_event_deform1','PSTA_img_event_deform2'])
-
 parser.add_argument('--arch', type=str, default='HiCMD_img', choices=['ResNet50', 'PSTA','PSTA_img_event_cat','PSTA_img_event_deform1','PSTA_img_event_deform2','PSTA_img_event_deform1128','HiCMD_Net_deform1','OSNet_deform1','STMN_Net_deform1','TransReID_Net_deform1','SRS_Net_deform1','HiCMD_Net_deform2','OSNet_deform2','STMN_Net_deform2','TransReID_Net_deform2','SRS_Net_deform2','CC_Net_deform2','CC_Net_deform1','HiCMD_Net_deform3','OSNet_deform3','STMN_Net_deform3','TransReID_Net_deform3','SRS_Net_deform3','CC_Net_deform3','PSTA_img_event_deform3','MCNL_deform3','OSNet_SNN','OSNet_SNN1','PSTA_SNN1','OSNet_SNN2','PSTA_SNN_deform1','PSTA_SNN_deform2','PSTA_SNN_deform4','PSTA_SNN2','PSTA_SNN3','PSTA_SNN4','GRL_img','STGCN_img','SINet','BiCNet','TCLNet','AP3D_img','HiCMD_img', 'OSNet_img', 'SRS_img', 'STMN_img', 'TransReID_img','CCReID_img','MCNL_img','OSNet_img_event_visual'])
 
 
@@ -63,8 +58,7 @@ cfg.merge_from_list(args_.opts)
 tqdm_enable = False
 
 def main():
-    # runId = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
-    # cfg.OUTPUT_DIR = os.path.join(cfg.OUTPUT_DIR, runId)
+
     if not os.path.exists(cfg.OUTPUT_DIR):
         os.mkdir(cfg.OUTPUT_DIR)
     print(cfg.OUTPUT_DIR)
@@ -99,14 +93,6 @@ def main():
         dataset = data_manager.init_dataset(root=cfg.DATASETS.ROOT_DIR, name=args_.dataset, split_id = args_.split_id)
     print("Initializing model: {}".format(cfg.MODEL.NAME))
 
-    # if args_.arch[-1] == '3': 
-    #     model = models.init_model(name=args_.arch, num_classes=dataset.num_train_pids, pretrain_choice=cfg.MODEL.PRETRAIN_CHOICE,
-    #                             model_name=cfg.MODEL.NAME, seq_len = args_.seq_len,weight=args_.event_weight)
-
-    # else:
-    #     model = models.init_model(name=args_.arch, num_classes=dataset.num_train_pids, pretrain_choice=cfg.MODEL.PRETRAIN_CHOICE,
-    #                             model_name=cfg.MODEL.NAME, seq_len = args_.seq_len)
-
     model = models.init_model(name=args_.arch, num_classes=dataset.num_train_pids, pretrain_choice=cfg.MODEL.PRETRAIN_CHOICE,
                             model_name=cfg.MODEL.NAME, seq_len = args_.seq_len)
 
@@ -114,12 +100,12 @@ def main():
 
     transform_train = T.Compose([
         T.resize(cfg.INPUT.SIZE_TRAIN, interpolation=3),
- #       T.random_crop((256,128)),
- #       T.pad(10),
+       T.random_crop((256,128)),
+       T.pad(10),
         T.random_horizontal_flip(),
         T.to_tensor(),
         T.normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
-        # T.random_erasing(probability=cfg.INPUT.RE_PROB, mean=cfg.INPUT.PIXEL_MEAN)
+        T.random_erasing(probability=cfg.INPUT.RE_PROB, mean=cfg.INPUT.PIXEL_MEAN)
     ])
 
     transform_test = T.Compose([
@@ -272,9 +258,7 @@ def train(model, trainloader, xent, tent, optimizer, use_gpu):
         if use_gpu:
             imgs = imgs.cuda()
             pids = pids.cuda()
-        # print('imgs=',imgs.shape)
         outputs, features = model(imgs)
-        # print('outputs=',outputs.shape)
         if isinstance(outputs, (tuple, list)):
             xent_loss = DeepSupervision(xent, outputs, pids)
         else:

@@ -192,7 +192,6 @@ class VideoDataset(Dataset):
                 for index in indices:
                     index=int(index)
                     img_path = img_paths[index]
-                    # print('img_path=',img_path)
                     img = read_image(img_path)
                     if self.transform is not None:
                         img = self.transform(img)
@@ -244,12 +243,9 @@ class VideoDataset(Dataset):
                 clip = [self.transform(img) for img in clip]
 
             clip = torch.stack(clip, 0)
-            # print('clip=',clip.shape)
 
             return clip, pid, camid, out
-            # clip.shape = [8,3,256,128]
-            # pid.type = int
-            # camid= 0或1
+
 
         elif self.sample == 'Random_interval':
             img_paths = list(img_paths)
