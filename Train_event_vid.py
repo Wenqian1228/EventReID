@@ -45,7 +45,7 @@ parser.add_argument('--test_sampler', type=str, default='Begin_interval', help='
 parser.add_argument('--triplet_distance', type=str, default='cosine', choices=['cosine','euclidean'])
 parser.add_argument('--test_distance', type=str, default='cosine', choices=['cosine','euclidean'])
 parser.add_argument('--split_id', type=int, default=0)
-parser.add_argument('--dataset', type=str, default='pride_event_vid', choices=['mars','duke','prid','prid_event','prid_event_vid','mars_event_vid','prid_dark2_event_vid','Low_event_vid','iLIDSVID_event_vid','iLIDSVID_event_vid_blur4_5','iLIDSVID_block_event','PRID_blur_event','iLIDSVID_dark_event','pride_event_vid'])
+parser.add_argument('--dataset', type=str, default='pride_event_vid', choices=['mars','prid','prid_event','prid_event_vid','mars_event_vid','iLIDSVID_event_vid'])
 parser.add_argument('--seq_len', type=int, default=2)
 parser.add_argument('--event_weight', type=float, default=0.0001)
 
