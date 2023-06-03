@@ -53,6 +53,7 @@ mars/
     mars_attributes.csv
 ```
 6. Change the global variable `_C.DATASETS.ROOT_DIR` to `/path2mars/mars` and `_C.DATASETS.NAME` to `mars` in config or configs.
+7. Utilize [V2E](https://github.com/SensorsINI/v2e) to generate the corresponding event sequence.
 
 
 ### iLIDS-VID
