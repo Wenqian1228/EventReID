@@ -54,20 +54,41 @@ mars/
 ```
 6. Change the global variable `_C.DATASETS.ROOT_DIR` to `/path2mars/mars` and `_C.DATASETS.NAME` to `mars` in config or configs.
 
+
 ### iLIDS-VID
 
 * Create a directory named ilids-vid/ under data/.
 
 * Download the dataset from http://www.eecs.qmul.ac.uk/~xiatian/downloads_qmul_iLIDS-VID_ReID_dataset.html to "ilids-vid".
 
+* Download the event sequence from: https://pan.baidu.com/s/19BgDlcbeKtt7EySNpD8gpw    password：5jdg 
+
+
 * Organize the data structure to match
+
 
 ```
 ilids-vid/
     i-LIDS-VID/
+    i-LIDS-VID—event/
     train-test people splits
 ```
 
+### PRID
+
+* Create a directory named PRID/ under data/.
+
+* Download the dataset and event sequence from: https://pan.baidu.com/s/13OTKjwcfbrQQDbDtPyEYRA    password：5olr 
+
+
+* Organize the data structure to match
+
+
+```
+PRID/
+    prid_2011/
+    prid_2011_event/
+```
 ---
 
 ## Train
